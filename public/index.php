@@ -61,11 +61,14 @@ $app->get('/links', function () use ($app) {
         $conditions[] = "preposition LIKE '".$pq."'";
     }
 
+    $conditions[] = "sh1 IN ('".implode("','", $leftProperties)."')";
+    $conditions[] = "sh2 IN ('".implode("','", $rightProperties)."')";
+
     if(count($conditions) != 0) {
         $query .= "WHERE ".implode(" AND ", $conditions)." ";
     }
 
-    $query .= "LIMIT 1000";
+    $query .= " ORDER BY count DESC LIMIT 1000";
 
     $data = R::getAll($query);
 
