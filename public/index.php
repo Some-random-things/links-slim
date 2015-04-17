@@ -23,10 +23,47 @@ R::freeze(true);
 
 $app->get('/words', function() use ($app) {
     $query = $app->request()->get('query');
-    
+    $type = $app->request()->get('type');
+    $properties = explode(",", $app->request()->get('properties'));
+
+    switch($type) {
+        case "leftWord":
+            $col = "word1";
+            $sh = "sh1";
+            break;
+        case "rightWord":
+            $col = "word2";
+            $sh = "sh2";
+            break;
+        case "preposition":
+            $col = "preposition";
+            break;
+    }
+
+    $qr = "SELECT DISTINCT ".$col." FROM linksview ";
+
+    $conditions = array();
+    if($col != "preposition") {
+        $conditions[] = $sh." IN ('".implode("','", $properties)."')";
+    }
+
+    $conditions[] = $col." LIKE '".$query."%'";
+
+    if(count($conditions) != 0) {
+        $qr .= "WHERE ".implode(" AND ", $conditions)." ";
+    }
+
+    $data = R::getAll($qr);
+
+    $words = array();
+    foreach($data as $word) {
+        $words[] = $word[$col];
+    }
+
     $app->render(200, array(
        'query' => $query,
-       'words' => ['word1', 'word2', 'word3']
+       'type' => $type,
+       'words' => $words
     ));
 });
 
