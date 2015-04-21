@@ -82,17 +82,17 @@ $app->get('/links', function () use ($app) {
     $query = "SELECT * FROM linksview ";
     $conditions = array();
 
-    if($leftWord != "null") {
+    if($leftWord != "null" && !empty($leftWord)) {
         $lwq = $leftWord;
         if(!$leftWordExactMatch) $lwq .= "%";
         $conditions[] = "word1 LIKE '".$lwq."'";
     }
-    if($rightWord != "null") {
+    if($rightWord != "null" && !empty($rightWord)) {
         $rwq = $rightWord;
         if(!$rightWordExactMatch) $rwq .= "%";
         $conditions[] = "word2 LIKE '".$rwq."'";
     }
-    if($preposition != "null") {
+    if($preposition != "null" && !empty($preposition)) {
         $pq = $preposition;
         if(!$prepositionExactMatch) $pq .= "%";
         $conditions[] = "preposition LIKE '".$pq."'";
